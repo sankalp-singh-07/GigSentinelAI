@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -24,3 +25,14 @@ class PolicyResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ActivePolicyResponse(BaseModel):
+    has_active_policy: bool
+    message: str
+    policy: Optional[PolicyResponse] = None
+
+
+class PolicyListResponse(BaseModel):
+    total: int
+    policies: List[PolicyResponse]

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
@@ -10,18 +10,22 @@ from models.user_model import User
 from utils.plans import PLANS
 
 
+VALID_PLAN_TYPES: set[str] = {p["type"] for p in PLANS}
+
+
 def _find_plan(plan_type: str) -> Optional[dict]:
-    """Return plan dict matching plan_type, or None."""
     return next((p for p in PLANS if p["type"] == plan_type), None)
 
+
+def _now_utc() -> datetime:
+    return datetime.now(timezone.utc)
 
 def get_plans() -> list[dict]:
     return PLANS
 
 
 async def get_active_policy(user_id: str, db: AsyncSession) -> Optional[Policy]:
-    """Return the user's current ACTIVE policy that has not yet expired."""
-    now = datetime.now(timezone.utc)
+    now = _now_utc()
     result = await db.execute(
         select(Policy).where(
             Policy.user_id == user_id,
@@ -32,22 +36,94 @@ async def get_active_policy(user_id: str, db: AsyncSession) -> Optional[Policy]:
     return result.scalars().first()
 
 
+async def get_my_policy(user: User, db: AsyncSession) -> dict:
+    user_id = str(user.id)
+
+    active = await get_active_policy(user_id=user_id, db=db)
+
+    if active:
+        return {
+            "has_active_policy": True,
+            "message": "Active policy found.",
+            "policy": active,
+        }
+
+
+    now = _now_utc()
+    stale_result = await db.execute(
+        select(Policy).where(
+            Policy.user_id == user_id,
+            Policy.status == "ACTIVE",
+            Policy.end_date <= now,
+        )
+    )
+    stale_policies = stale_result.scalars().all()
+    if stale_policies:
+        for stale in stale_policies:
+            stale.status = "EXPIRED"
+            db.add(stale)
+        await db.commit()
+
+    return {
+        "has_active_policy": False,
+        "message": "No active policy found. Purchase a new plan to get covered.",
+        "policy": None,
+    }
+
+
+async def get_all_policies(user: User, db: AsyncSession) -> dict:
+    user_id = str(user.id)
+    now = _now_utc()
+
+    result = await db.execute(
+        select(Policy)
+        .where(Policy.user_id == user_id)
+        .order_by(Policy.created_at.desc())
+    )
+    policies = result.scalars().all()
+
+    dirty = False
+    for p in policies:
+        if p.status == "ACTIVE" and p.end_date <= now:
+            p.status = "EXPIRED"
+            db.add(p)
+            dirty = True
+    if dirty:
+        await db.commit()
+        for p in policies:
+            await db.refresh(p)
+
+    return {
+        "total": len(policies),
+        "policies": policies,
+    }
+
+
 async def buy_policy(user: User, plan_type: str, db: AsyncSession) -> Policy:
-    plan = _find_plan(plan_type)
+    normalised = plan_type.strip().lower()
+    plan = _find_plan(normalised)
     if not plan:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid plan type '{plan_type}'. Choose from: {[p['type'] for p in PLANS]}.",
+            detail=(
+                f"Invalid plan type '{plan_type}'. "
+                f"Valid options are: {sorted(VALID_PLAN_TYPES)}."
+            ),
         )
 
     existing = await get_active_policy(user_id=str(user.id), db=db)
     if existing:
+        days_left = (existing.end_date.replace(tzinfo=timezone.utc) - _now_utc()).days
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="You already have an active policy. It must expire before purchasing a new one.",
+            detail=(
+                f"You already have an active '{existing.plan_type}' policy "
+                f"with approximately {days_left} day(s) remaining. "
+                "It must expire before you can purchase a new one."
+            ),
         )
 
-    now = datetime.now(timezone.utc)
+    now = _now_utc()
     policy = Policy(
         user_id=str(user.id),
         plan_type=plan["type"],
@@ -60,20 +136,4 @@ async def buy_policy(user: User, plan_type: str, db: AsyncSession) -> Policy:
     db.add(policy)
     await db.commit()
     await db.refresh(policy)
-    return policy
-
-
-async def get_my_policy(user: User, db: AsyncSession) -> Policy:
-    """Return the user's most recent policy (any status)."""
-    result = await db.execute(
-        select(Policy)
-        .where(Policy.user_id == str(user.id))
-        .order_by(Policy.created_at.desc())
-    )
-    policy = result.scalars().first()
-    if not policy:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No policy found for this user.",
-        )
     return policy
