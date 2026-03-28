@@ -1,8 +1,15 @@
 import uuid
-from sqlalchemy import String, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime, timezone
+from typing import TYPE_CHECKING, List
+
+from sqlalchemy import DateTime, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.database import Base
+
+if TYPE_CHECKING:
+    from models.policy_model import Policy
+
 
 class User(Base):
     __tablename__ = "users"
@@ -17,4 +24,8 @@ class User(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+
+    policies: Mapped[List["Policy"]] = relationship(
+        "Policy", back_populates="user", cascade="all, delete-orphan"
     )
