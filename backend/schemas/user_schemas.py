@@ -31,8 +31,25 @@ class UserRegister(BaseModel):
                 pass
         raise ValueError("dob must be in 'DD/MM/YYYY' or 'YYYY-MM-DD' format and be a valid date")
 
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class UserResponse(BaseModel):
+    id: str
+    name: str
+    email: EmailStr
+    mobile: str
+    dob: str
+
+    class Config:
+        from_attributes = True
+
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
     message: str
-    user: dict
+    user: UserResponse
