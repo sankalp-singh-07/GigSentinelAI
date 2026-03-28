@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     JWT_EXPIRE_MINUTES: int = 1440
     JWT_REFRESH_EXPIRE_MINUTES: int = 10080
     ENVIRONMENT: str = "development"
+    OPENWEATHER_API_KEY: str = "API_KEY_FOR_OPENWEATHER"
+    TOMTOM_API_KEY: str = ""
 
 
     class Config:
