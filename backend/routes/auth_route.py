@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from models.user_model import User
 from schemas.user_schemas import (
+    AccessTokenResponse,
     FingerprintLoginRequest,
     ForgotPasswordRequest,
     ResetPasswordRequest,
@@ -47,12 +48,12 @@ async def me(current_user: CurrentUser):
     return current_user
 
 
-@router.post("/refresh", status_code=200, response_model=TokenResponse)
+@router.post("/refresh", status_code=200, response_model=AccessTokenResponse)
 async def refresh(refresh_data: FingerprintLoginRequest, db: DbDep):
     return await refresh_access_token(refresh_token=refresh_data.refresh_token, db=db)
 
 
-@router.post("/login/fingerprint", status_code=200, response_model=TokenResponse)
+@router.post("/login/fingerprint", status_code=200, response_model=AccessTokenResponse)
 async def login_fingerprint(fingerprint_data: FingerprintLoginRequest, db: DbDep):
     return await fingerprint_login(refresh_token=fingerprint_data.refresh_token, db=db)
 

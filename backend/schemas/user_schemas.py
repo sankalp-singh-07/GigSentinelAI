@@ -56,6 +56,11 @@ class TokenResponse(BaseModel):
     user: UserResponse
 
 
+class AccessTokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+
+
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 

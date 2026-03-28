@@ -32,6 +32,7 @@ async def create_access_token(
     data: dict, expires_delta: Optional[timedelta] = None
 ) -> str:
     to_encode = data.copy()
+    to_encode["type"] = "access"
     expire = datetime.now(timezone.utc) + (
         expires_delta or timedelta(minutes=settings.JWT_EXPIRE_MINUTES)
     )
@@ -43,6 +44,7 @@ async def create_refresh_token(
     data: dict, expires_delta: Optional[timedelta] = None
 ) -> str:
     to_encode = data.copy()
+    to_encode["type"] = "refresh"
     expire = datetime.now(timezone.utc) + (
         expires_delta or timedelta(minutes=settings.JWT_REFRESH_EXPIRE_MINUTES)
     )
@@ -53,7 +55,7 @@ async def create_refresh_token(
 async def verify_access_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
-        if not payload.get("sub"):
+        if payload.get("type") != "access" or not payload.get("sub"):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid access token.",
@@ -69,7 +71,7 @@ async def verify_access_token(token: str) -> dict:
 async def verify_refresh_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.JWT_REFRESH_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
-        if not payload.get("sub"):
+        if payload.get("type") != "refresh" or not payload.get("sub"):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid refresh token.",

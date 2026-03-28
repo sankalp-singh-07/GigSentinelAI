@@ -100,7 +100,11 @@ async def refresh_access_token(refresh_token: str, db: AsyncSession) -> dict:
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found.",
         )
-    return await _build_token_response(user, "Token refreshed successfully.")
+    token_data = {"sub": str(user.id), "email": user.email}
+    return {
+        "access_token": await create_access_token(data=token_data),
+        "token_type": "bearer",
+    }
 
 
 async def fingerprint_login(refresh_token: str, db: AsyncSession) -> dict:
