@@ -50,6 +50,34 @@ class UserResponse(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
+    refresh_token: str
     token_type: str
     message: str
     user: UserResponse
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class VerifyResetCodeRequest(BaseModel):
+    email: EmailStr
+    reset_code: str
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    reset_code: str
+    new_password: str = Field(..., min_length=8, description="Password must contain at least one uppercase letter, one digit, and one special character.")
+
+    @field_validator('new_password')
+    @classmethod
+    def validate_password(cls, value):
+        if not re.search(r"[A-Z]", value):
+            raise ValueError("Password must contain at least one uppercase letter")
+        if not re.search(r"\d", value):
+            raise ValueError("Password must contain at least one digit")
+        if not re.search(r"[@$!%*?&]", value):
+            raise ValueError("Password must contain at least one special character (@, $, !, %, *, ?, or &)")
+        return value
+
+class FingerprintLoginRequest(BaseModel):
+    refresh_token: str
