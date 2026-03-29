@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-from schemas.risk_schema import RiskResponse
+from schemas.risk_schemas import RiskResponse
 from services.risk_service import get_risk_analysis
 
 router = APIRouter(prefix="/risk", tags=["risk"])
