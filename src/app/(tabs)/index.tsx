@@ -1,96 +1,145 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-const quickActions = [
-  { icon: "📊", title: "Analytics", subtitle: "View insights" },
-  { icon: "🛡️", title: "Security", subtitle: "Check status" },
-  { icon: "📋", title: "Tasks", subtitle: "3 pending" },
-  { icon: "💬", title: "Messages", subtitle: "5 new" },
-];
-
-const recentActivity = [
-  { icon: "🟢", title: "System scan completed", time: "2 min ago" },
-  { icon: "🔵", title: "New update available", time: "15 min ago" },
-  { icon: "🟡", title: "Backup in progress", time: "1 hr ago" },
-  { icon: "🟢", title: "Security check passed", time: "3 hrs ago" },
-];
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 export default function HomeScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-slate-900">
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View className="px-6 pt-4 pb-6">
-          <Text className="text-gray-400 text-sm">Welcome back</Text>
-          <Text className="text-white text-3xl font-bold mt-1">
-            GigSentinel AI
-          </Text>
-        </View>
+    <View style={styles.container}>
+      {/* Top green section */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Welcome</Text>
+      </View>
 
-        {/* Status Card */}
-        <View className="mx-6 bg-indigo-600 rounded-2xl p-5 mb-6">
-          <View className="flex-row items-center justify-between">
-            <View>
-              <Text className="text-indigo-200 text-sm">System Status</Text>
-              <Text className="text-white text-2xl font-bold mt-1">
-                All Clear
-              </Text>
-              <Text className="text-indigo-200 text-sm mt-1">
-                Last checked: Just now
-              </Text>
-            </View>
-            <View className="bg-indigo-500 rounded-full w-16 h-16 items-center justify-center">
-              <Text className="text-3xl">✅</Text>
-            </View>
-          </View>
-        </View>
+      {/* White rounded card */}
+      <View style={styles.card}>
+        <Text style={styles.label}>Username Or Email</Text>
+        <TextInput
+          placeholder="example@email.com"
+          placeholderTextColor="#94a3b8"
+          style={styles.input}
+        />
 
-        {/* Quick Actions */}
-        <View className="px-6 mb-6">
-          <Text className="text-white text-lg font-semibold mb-3">
-            Quick Actions
-          </Text>
-          <View className="flex-row flex-wrap gap-3">
-            {quickActions.map((action, index) => (
-              <Pressable
-                key={index}
-                className="bg-slate-800 rounded-xl p-4 flex-1 min-w-[45%] border border-slate-700"
-              >
-                <Text className="text-2xl mb-2">{action.icon}</Text>
-                <Text className="text-white font-semibold">{action.title}</Text>
-                <Text className="text-gray-400 text-sm">{action.subtitle}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
+        <Text style={[styles.label, { marginTop: 18 }]}>Password</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="••••••••"
+            placeholderTextColor="#94a3b8"
+            secureTextEntry
+            style={styles.passwordInput}
+          />
+          <Ionicons name="eye-outline" size={20} color="#64748b" />
+        </View> 
+        <TouchableOpacity style={styles.loginButton}>
+          <Text style={styles.loginText}>Log In</Text>
+        </TouchableOpacity>
 
-        {/* Recent Activity */}
-        <View className="px-6 mb-8">
-          <Text className="text-white text-lg font-semibold mb-3">
-            Recent Activity
-          </Text>
-          <View className="bg-slate-800 rounded-xl border border-slate-700">
-            {recentActivity.map((item, index) => (
-              <View
-                key={index}
-                className={`flex-row items-center p-4 ${
-                  index < recentActivity.length - 1
-                    ? "border-b border-slate-700"
-                    : ""
-                }`}
-              >
-                <Text className="text-lg mr-3">{item.icon}</Text>
-                <View className="flex-1">
-                  <Text className="text-white font-medium">{item.title}</Text>
-                  <Text className="text-gray-500 text-xs mt-0.5">
-                    {item.time}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        <TouchableOpacity>
+          <Text style={styles.forgotText}>Forgot Password?</Text>
+        </TouchableOpacity>
+<TouchableOpacity
+  style={styles.signupButton}
+  onPress={() => router.push("/register")}
+>
+  <Text style={styles.signupText}>Sign Up</Text>
+</TouchableOpacity>
+      </View>
+    </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#111827",
+  },
+
+  header: {
+    backgroundColor: "#14d8b4",
+    height: 220,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomLeftRadius: 35,
+    borderBottomRightRadius: 35,
+  },
+
+  headerTitle: {
+    color: "#0f172a",
+    fontSize: 28,
+    fontWeight: "700",
+  },
+  card: {
+    backgroundColor: "#f1f5f9",
+    marginHorizontal: 24,
+    marginTop: -45,
+    borderRadius: 28,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
+  },
+
+  label: {
+    color: "#334155",
+    fontSize: 14,
+    marginBottom: 8,
+    fontWeight: "600",
+  },
+  input: {
+    backgroundColor: "#dff5ea",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+    color: "#0f172a",
+  },
+
+  passwordContainer: {
+    backgroundColor: "#dff5ea",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 14,
+    fontSize: 15,
+    color: "#0f172a",
+  },
+  loginButton: {
+    marginTop: 28,
+    backgroundColor: "#14d8b4",
+    borderRadius: 24,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+
+  loginText: {
+    color: "#0f172a",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+
+  forgotText: {
+    textAlign: "center",
+    marginTop: 14,
+    color: "#64748b",
+    fontSize: 13,
+  },
+
+  signupButton: {
+    marginTop: 18,
+    backgroundColor: "#dff5ea",
+    borderRadius: 24,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  signupText: {
+    color: "#0f172a",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  
+});
