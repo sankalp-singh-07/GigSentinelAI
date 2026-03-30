@@ -1,20 +1,21 @@
+import React from 'react';
+import { View } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../constants/theme';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 interface TabConfig {
   name: string;
   icon: IoniconName;
-  iconActive: IoniconName;
 }
 
 const TAB_CONFIGS: TabConfig[] = [
-  { name: 'index',    icon: 'home-outline',             iconActive: 'home' },
-  { name: 'explore',  icon: 'bar-chart-outline',        iconActive: 'bar-chart' },
-  { name: 'profile',  icon: 'swap-horizontal-outline',  iconActive: 'swap-horizontal' },
-  { name: 'settings', icon: 'layers-outline',           iconActive: 'layers' },
+  { name: 'index',        icon: 'home-outline' },
+  { name: 'explore',      icon: 'stats-chart-outline' },
+  { name: 'transactions', icon: 'swap-horizontal' },
+  { name: 'settings',     icon: 'layers-outline' },
+  { name: 'profile',      icon: 'person-outline' },
 ];
 
 export default function TabsLayout() {
@@ -22,17 +23,13 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: Colors.navBg,
-          borderTopColor: Colors.navBorder,
-          borderTopWidth: 1,
-          height: 68,
-          paddingBottom: 10,
-          paddingTop: 8,
-        },
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.tabInactive,
         tabBarShowLabel: false,
+        tabBarStyle: {
+          height: 60,
+          backgroundColor: '#ffffff',
+          borderTopWidth: 0.5,
+          elevation: 10,
+        },
       }}
     >
       {TAB_CONFIGS.map((tab) => (
@@ -40,12 +37,14 @@ export default function TabsLayout() {
           key={tab.name}
           name={tab.name}
           options={{
-            tabBarIcon: ({ focused, color }) => (
-              <Ionicons
-                name={focused ? tab.iconActive : tab.icon}
-                size={24}
-                color={color}
-              />
+            tabBarIcon: ({ focused }) => (
+              <View className="items-center justify-center">
+                <Ionicons
+                  name={tab.icon}
+                  size={24}
+                  color={focused ? '#22c55e' : '#6b7280'}
+                />
+              </View>
             ),
           }}
         />
