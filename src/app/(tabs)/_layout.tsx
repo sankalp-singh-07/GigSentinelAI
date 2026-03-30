@@ -1,26 +1,21 @@
-import { Tabs } from "expo-router";
-import { Text, View } from "react-native";
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Colors } from '../../constants/theme';
 
-type TabIconProps = {
-  icon: string;
-  label: string;
-  focused: boolean;
-};
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
-function TabIcon({ icon, label, focused }: TabIconProps) {
-  return (
-    <View className="items-center justify-center pt-2">
-      <Text className={`text-xl ${focused ? "" : "opacity-50"}`}>{icon}</Text>
-      <Text
-        className={`text-[10px] mt-1 ${
-          focused ? "text-indigo-400 font-semibold" : "text-gray-500"
-        }`}
-      >
-        {label}
-      </Text>
-    </View>
-  );
+interface TabConfig {
+  name: string;
+  icon: IoniconName;
+  iconActive: IoniconName;
 }
+
+const TAB_CONFIGS: TabConfig[] = [
+  { name: 'index',    icon: 'home-outline',             iconActive: 'home' },
+  { name: 'explore',  icon: 'bar-chart-outline',        iconActive: 'bar-chart' },
+  { name: 'profile',  icon: 'swap-horizontal-outline',  iconActive: 'swap-horizontal' },
+  { name: 'settings', icon: 'layers-outline',           iconActive: 'layers' },
+];
 
 export default function TabsLayout() {
   return (
@@ -28,47 +23,33 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#0f172a",
-          borderTopColor: "#1e293b",
+          backgroundColor: Colors.navBg,
+          borderTopColor: Colors.navBorder,
           borderTopWidth: 1,
-          height: 70,
-          paddingBottom: 8,
+          height: 68,
+          paddingBottom: 10,
+          paddingTop: 8,
         },
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.tabInactive,
         tabBarShowLabel: false,
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🏠" label="Home" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🔍" label="Explore" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="👤" label="Profile" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="⚙️" label="Settings" focused={focused} />
-          ),
-        }}
-      />
+      {TAB_CONFIGS.map((tab) => (
+        <Tabs.Screen
+          key={tab.name}
+          name={tab.name}
+          options={{
+            tabBarIcon: ({ focused, color }) => (
+              <Ionicons
+                name={focused ? tab.iconActive : tab.icon}
+                size={24}
+                color={color}
+              />
+            ),
+          }}
+        />
+      ))}
     </Tabs>
   );
 }

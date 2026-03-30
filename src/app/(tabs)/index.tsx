@@ -1,95 +1,124 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
-const quickActions = [
-  { icon: "📊", title: "Analytics", subtitle: "View insights" },
-  { icon: "🛡️", title: "Security", subtitle: "Check status" },
-  { icon: "📋", title: "Tasks", subtitle: "3 pending" },
-  { icon: "💬", title: "Messages", subtitle: "5 new" },
-];
+import Header from '../../components/Header';
+import EarningsCard from '../../components/EarningsCard';
+import RiskBar from '../../components/RiskBar';
+import ProtectionCard from '../../components/ProtectionCard';
+import TabSwitcher from '../../components/TabSwitcher';
+import ActivityItem from '../../components/ActivityItem';
 
-const recentActivity = [
-  { icon: "🟢", title: "System scan completed", time: "2 min ago" },
-  { icon: "🔵", title: "New update available", time: "15 min ago" },
-  { icon: "🟡", title: "Backup in progress", time: "1 hr ago" },
-  { icon: "🟢", title: "Security check passed", time: "3 hrs ago" },
-];
+import {
+  Colors,
+  MOCK_USER,
+  MOCK_EARNINGS,
+  MOCK_RISK,
+  MOCK_PROTECTION,
+  MOCK_ACTIVITIES,
+} from '../../constants/theme';
 
 export default function HomeScreen() {
+  const [activeTab, setActiveTab] = useState('This Month');
+
   return (
-    <SafeAreaView className="flex-1 bg-slate-900">
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View className="px-6 pt-4 pb-6">
-          <Text className="text-gray-400 text-sm">Welcome back</Text>
-          <Text className="text-white text-3xl font-bold mt-1">
-            GigSentinel AI
-          </Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bgDark }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 32 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── Header ── */}
+        <Header name={MOCK_USER.name} />
+
+        {/* ── Earnings ── */}
+        <EarningsCard
+          expected={MOCK_EARNINGS.expected}
+          today={MOCK_EARNINGS.today}
+        />
+
+        {/* ── Risk Score ── */}
+        <RiskBar
+          score={MOCK_RISK.score}
+          label={MOCK_RISK.label}
+          message={MOCK_RISK.message}
+        />
+
+        {/* ── Protection Card ── */}
+        <ProtectionCard
+          plan={MOCK_PROTECTION.plan}
+          protectedAmount={MOCK_PROTECTION.protectedAmount}
+          potentialLoss={MOCK_PROTECTION.potentialLoss}
+        />
+
+        {/* ── Tab Switcher ── */}
+        <TabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
+
+        {/* ── Activity List ── */}
+        <View
+          style={{
+            marginHorizontal: 16,
+            marginTop: 14,
+            backgroundColor: Colors.bgCard,
+            borderRadius: 16,
+            borderWidth: 1,
+            borderColor: Colors.primaryDark,
+            overflow: 'hidden',
+          }}
+        >
+          {MOCK_ACTIVITIES.map((item, index) => (
+            <ActivityItem
+              key={item.id}
+              icon={item.icon}
+              title={item.title}
+              subtitle={item.subtitle}
+              amount={item.amount}
+              isLast={index === MOCK_ACTIVITIES.length - 1}
+            />
+          ))}
         </View>
 
-        {/* Status Card */}
-        <View className="mx-6 bg-indigo-600 rounded-2xl p-5 mb-6">
-          <View className="flex-row items-center justify-between">
-            <View>
-              <Text className="text-indigo-200 text-sm">System Status</Text>
-              <Text className="text-white text-2xl font-bold mt-1">
-                All Clear
-              </Text>
-              <Text className="text-indigo-200 text-sm mt-1">
-                Last checked: Just now
-              </Text>
-            </View>
-            <View className="bg-indigo-500 rounded-full w-16 h-16 items-center justify-center">
-              <Text className="text-3xl">✅</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Quick Actions */}
-        <View className="px-6 mb-6">
-          <Text className="text-white text-lg font-semibold mb-3">
-            Quick Actions
+        {/* ── CTA Button ── */}
+        <TouchableOpacity
+          onPress={() => router.push('/simulate' as any)}
+          activeOpacity={0.85}
+          style={{
+            marginHorizontal: 16,
+            marginTop: 20,
+            backgroundColor: Colors.primary,
+            borderRadius: 50,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 16,
+            gap: 10,
+            shadowColor: Colors.primary,
+            shadowOffset: { width: 0, height: 6 },
+            shadowOpacity: 0.45,
+            shadowRadius: 12,
+            elevation: 8,
+          }}
+        >
+          <Ionicons name="cloud" size={20} color={Colors.bgDark} />
+          <Text
+            style={{
+              color: Colors.bgDark,
+              fontSize: 16,
+              fontWeight: '800',
+              letterSpacing: 0.3,
+            }}
+          >
+            Simulate Rain Event
           </Text>
-          <View className="flex-row flex-wrap gap-3">
-            {quickActions.map((action, index) => (
-              <Pressable
-                key={index}
-                className="bg-slate-800 rounded-xl p-4 flex-1 min-w-[45%] border border-slate-700"
-              >
-                <Text className="text-2xl mb-2">{action.icon}</Text>
-                <Text className="text-white font-semibold">{action.title}</Text>
-                <Text className="text-gray-400 text-sm">{action.subtitle}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
-        {/* Recent Activity */}
-        <View className="px-6 mb-8">
-          <Text className="text-white text-lg font-semibold mb-3">
-            Recent Activity
-          </Text>
-          <View className="bg-slate-800 rounded-xl border border-slate-700">
-            {recentActivity.map((item, index) => (
-              <View
-                key={index}
-                className={`flex-row items-center p-4 ${
-                  index < recentActivity.length - 1
-                    ? "border-b border-slate-700"
-                    : ""
-                }`}
-              >
-                <Text className="text-lg mr-3">{item.icon}</Text>
-                <View className="flex-1">
-                  <Text className="text-white font-medium">{item.title}</Text>
-                  <Text className="text-gray-500 text-xs mt-0.5">
-                    {item.time}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
