@@ -59,12 +59,18 @@ export default function InsightsScreen() {
         </View>
 
         {/* Risk Trend Badge */}
-        <View className="flex-row items-center mb-3">
-          <View className="bg-gray-900 rounded-l-full px-4 py-1.5 z-10">
-            <Text className="text-white text-xs font-semibold">Weekly Risk Trend</Text>
+        <View className="flex-row items-center gap-2 mt-3 mb-2">
+          <View className="bg-black/20 px-3 py-1 rounded-full">
+            <Text className="text-white text-xs">
+              Weekly Risk Trend
+            </Text>
           </View>
-          <View className="bg-white rounded-full px-5 py-1.5 -ml-4 shadow-sm z-20">
-            <Text className="text-gray-800 text-xs font-bold italic">Increasing</Text>
+
+          <View className="flex-row items-center bg-white px-3 py-1 rounded-full gap-1">
+            <Ionicons name="trending-up" size={14} color="#16a34a" />
+            <Text className="text-green-600 text-xs font-semibold">
+              Increasing
+            </Text>
           </View>
         </View>
 
