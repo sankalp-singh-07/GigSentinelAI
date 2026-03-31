@@ -1,95 +1,35 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated } from 'react-native';
-import { Colors } from '../constants/theme';
+import React from 'react';
+import { View, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../constants/theme';
 
 interface RiskBarProps {
   score: number;      // 0-100
-  label: string;      // e.g. "72% - HIGH RISK"
+  label: string;
   message: string;
 }
 
 export default function RiskBar({ score, label, message }: RiskBarProps) {
-  const animWidth = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(animWidth, {
-      toValue: score,
-      duration: 900,
-      useNativeDriver: false,
-    }).start();
-  }, [score]);
-
-  const widthInterpolated = animWidth.interpolate({
-    inputRange: [0, 100],
-    outputRange: ['0%', '100%'],
-  });
-
   return (
-    <View
-      style={{
-        marginHorizontal: 16,
-        marginTop: 14,
-        backgroundColor: Colors.bgCard,
-        borderRadius: 16,
-        padding: 16,
-        borderWidth: 1,
-        borderColor: Colors.primaryDark,
-      }}
-    >
-      {/* Row: label + value */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        {/* "RISK SCORE" pill */}
-        <View
-          style={{
-            backgroundColor: '#111',
-            borderRadius: 20,
-            paddingHorizontal: 14,
-            paddingVertical: 5,
-          }}
-        >
-          <Text style={{ color: Colors.textWhite, fontSize: 11, fontWeight: '700', letterSpacing: 1 }}>
-            RISK SCORE
-          </Text>
+    <View className="mx-4 mt-4 bg-white rounded-2xl p-5 shadow-md border border-emerald-50">
+      <View className="flex-row justify-between items-center mb-4">
+        <View className="flex-row items-center">
+          <Ionicons name="warning-outline" size={18} color={COLORS.danger} />
+          <Text className="text-red-500 font-bold ml-2 tracking-wide text-xs">{label.toUpperCase()}</Text>
         </View>
-
-        {/* Score label + red dot */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          <Text style={{ color: Colors.textWhite, fontSize: 13, fontWeight: '700' }}>
-            {label}
-          </Text>
-          <View
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              backgroundColor: Colors.riskHigh,
-            }}
-          />
-        </View>
+        <Text className="text-gray-400 text-xs font-medium">{score}% Chance</Text>
       </View>
-
-      {/* Progress bar track */}
-      <View
-        style={{
-          height: 8,
-          backgroundColor: Colors.riskBar,
-          borderRadius: 4,
-          overflow: 'hidden',
-        }}
-      >
-        <Animated.View
-          style={{
-            height: '100%',
-            width: widthInterpolated,
-            backgroundColor: Colors.riskHigh,
-            borderRadius: 4,
-          }}
+      
+      {/* Progress Bar Container */}
+      <View className="h-2.5 w-full bg-gray-100 rounded-full overflow-hidden mb-3">
+        {/* Actual Progress */}
+        <View 
+          className="h-full bg-red-500 rounded-full" 
+          style={{ width: `${score}%` }} 
         />
       </View>
-
-      {/* Message below */}
-      <Text style={{ color: Colors.textMuted, fontSize: 12, marginTop: 10 }}>
-        {'- '}
+      
+      <Text className="text-gray-600 text-sm font-medium leading-5">
         {message}
       </Text>
     </View>

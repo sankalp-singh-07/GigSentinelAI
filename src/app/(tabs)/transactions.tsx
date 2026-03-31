@@ -1,104 +1,57 @@
 import React from 'react';
-import { View, Text, SectionList, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import TransactionItem, { TransactionData } from '../../components/TransactionItem';
-import ProgressBar from '../../components/ProgressBar';
+import { COLORS } from '../../constants/theme';
 
 const TRANSACTIONS = [
-  {
-    title: 'April',
-    data: [
-      { id: '1', type: 'rain', title: 'Heavy Rain Claim', datetime: 'Today, 3:30 PM', amount: '+₹400' },
-      { id: '2', type: 'aqi', title: 'High AQI Claim', datetime: 'Yesterday, 6:40 PM', amount: '+₹370' },
-      { id: '3', type: 'traffic', title: 'Traffic Claim', datetime: 'April 15, 9:30 AM', amount: '+₹120' },
-      { id: '4', type: 'other', title: 'Traffic Delay Impact', datetime: 'April 15, 9:00 AM', amount: '-₹120' },
-      { id: '5', type: 'rain', title: 'Rain Claim', datetime: 'April 14, 2:00 PM', amount: '+₹250' },
-      { id: '6', type: 'rain', title: 'Flood Claim', datetime: 'April 13, 1:00 PM', amount: '+₹500' },
-    ] as TransactionData[],
-  },
-  {
-    title: 'March',
-    data: [
-      { id: '7', type: 'other', title: 'Low Demand Claim', datetime: 'March 31, 7:30 PM', amount: '+₹80' },
-      { id: '8', type: 'other', title: 'Weather Alert Claim', datetime: 'March 28, 5:00 PM', amount: '+₹220' },
-      { id: '9', type: 'aqi', title: 'AQI Impact', datetime: 'March 25, 11:00 AM', amount: '-₹60' },
-    ] as TransactionData[],
-  },
+  { id: '1', type: 'Credit', amount: '₹400.00', title: 'Rain Protection Claim', date: '31 Mar, 2:30 PM', status: 'Completed' },
+  { id: '2', type: 'Debit', amount: '₹35.00', title: 'Weekly Plan Renewal', date: '30 Mar, 10:00 AM', status: 'Completed' },
+  { id: '3', type: 'Credit', amount: '₹370.00', title: 'AQI Protection Claim', date: '28 Mar, 6:40 PM', status: 'Completed' },
+  { id: '4', type: 'Credit', amount: '₹150.00', title: 'Late Delivery Shield', date: '28 Mar, 1:15 PM', status: 'Completed' },
 ];
 
 export default function TransactionsScreen() {
   return (
-    <SafeAreaView edges={['top', 'left', 'right']} className="flex-1 bg-green-500">
-      
-      {/* HEADER */}
-      <View className="px-4 pt-4 pb-4 flex-row justify-between items-center">
-        <TouchableOpacity activeOpacity={0.7} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#ffffff" />
-        </TouchableOpacity>
-
-        <Text className="text-white text-lg font-extrabold">
-          Protection Activity
-        </Text>
-
-        <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/notifications' as any)}>
-          <Ionicons name="notifications" size={24} color="#ffffff" />
+    <SafeAreaView className="flex-1 bg-emerald-500">
+      <View className="px-6 py-4 flex-row justify-between items-center">
+        <Text className="text-white text-2xl font-bold">Transactions</Text>
+        <TouchableOpacity className="w-10 h-10 bg-white/20 rounded-full items-center justify-center">
+          <Ionicons name="filter-outline" size={20} color="white" />
         </TouchableOpacity>
       </View>
 
-      {/* MAIN WHITE CONTAINER */}
-      <View className="flex-1 bg-white rounded-t-3xl px-4 pt-4">
-        
-        {/* Earnings Summary Card */}
-        <View className="bg-gray-50 rounded-3xl p-5 items-center mb-5" style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8 }}>
-          <Text className="text-gray-500 text-sm font-semibold mb-1">
-            Total Protected Earnings
-          </Text>
-          <Text className="text-gray-900 text-3xl font-extrabold">
-            ₹1,420
-          </Text>
-        </View>
-
-        {/* Coverage Efficiency Section */}
-        <View className="mb-6 px-1">
-          <View className="flex-row justify-between items-end mb-1">
-            <Text className="text-gray-700 text-sm font-bold">
-              Protection Coverage Efficiency
-            </Text>
-            <Text className="text-green-500 text-lg font-extrabold">
-              82%
-            </Text>
-          </View>
-          <ProgressBar percentage={82} />
-          <Text className="text-gray-500 text-xs mt-1">
-            Most Disruptions Successfully Covered
-          </Text>
-        </View>
-
-        {/* Transactions List */}
-        <SectionList
-          sections={TRANSACTIONS}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <TransactionItem item={item} />}
-          renderSectionHeader={({ section: { title } }) => (
-            <View className="bg-white">
-              <Text className="text-gray-500 text-sm font-semibold pt-4 mb-2 px-2">
-                {title.toUpperCase()}
-              </Text>
+      <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 100 }}>
+        <View className="bg-gray-50 rounded-t-[40px] px-4 pt-8 min-h-[700px]">
+          {TRANSACTIONS.map((item) => (
+            <View key={item.id} className="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-gray-100 flex-row items-center">
+              <View className={`w-12 h-12 rounded-full items-center justify-center ${item.type === 'Credit' ? 'bg-emerald-50' : 'bg-gray-50'}`}>
+                <Ionicons 
+                  name={item.type === 'Credit' ? 'add-circle-outline' : 'remove-circle-outline'} 
+                  size={24} 
+                  color={item.type === 'Credit' ? COLORS.primary : COLORS.textSecondary} 
+                />
+              </View>
+              
+              <View className="ml-4 flex-1">
+                <Text className="text-gray-800 font-bold">{item.title}</Text>
+                <Text className="text-gray-400 text-xs mt-1">{item.date}</Text>
+              </View>
+              
+              <View className="items-end">
+                <Text className={`font-extrabold text-lg ${item.type === 'Credit' ? 'text-emerald-600' : 'text-gray-800'}`}>
+                  {item.type === 'Credit' ? '+' : '-'}{item.amount}
+                </Text>
+                <View className={`px-2 py-0.5 rounded-full mt-1 ${item.status === 'Completed' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                  <Text className={`text-[10px] font-bold ${item.status === 'Completed' ? 'text-emerald-700' : 'text-gray-500'}`}>
+                    {item.status.toUpperCase()}
+                  </Text>
+                </View>
+              </View>
             </View>
-          )}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          stickySectionHeadersEnabled={true}
-          ListEmptyComponent={
-            <Text className="text-center mt-10 text-gray-400">
-              No transactions yet
-            </Text>
-          }
-        />
-
-      </View>
+          ))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

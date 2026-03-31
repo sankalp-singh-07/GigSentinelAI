@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SIM_COLORS } from '../constants/simulation';
+import { COLORS } from '../constants/theme';
 
 interface StepItemProps {
   label: string;
@@ -40,18 +40,8 @@ export default function StepItem({ label, icon, visible, isLast }: StepItemProps
 
   return (
     <Animated.View style={{ opacity, transform: [{ translateY }] }}>
-      {/* Step row */}
       <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: SIM_COLORS.stepActive,
-          borderRadius: 14,
-          padding: 14,
-          borderWidth: 1,
-          borderColor: SIM_COLORS.stepBorder,
-          marginBottom: 4,
-        }}
+        className="flex-row items-center bg-white rounded-2xl p-4 shadow-sm border border-emerald-50 mb-1"
       >
         {/* Check icon */}
         <Animated.View
@@ -60,32 +50,27 @@ export default function StepItem({ label, icon, visible, isLast }: StepItemProps
             marginRight: 12,
           }}
         >
-          <Ionicons name="checkmark-circle" size={26} color={SIM_COLORS.checkGreen} />
+          <Ionicons name="checkmark-circle" size={24} color={COLORS.success} />
         </Animated.View>
 
         {/* Step icon + label */}
         <Ionicons
           name={icon as any}
           size={20}
-          color={SIM_COLORS.primary}
+          color={COLORS.primary}
           style={{ marginRight: 10 }}
         />
         <Text
-          style={{
-            color: SIM_COLORS.textWhite,
-            fontSize: 15,
-            fontWeight: '600',
-            flex: 1,
-          }}
+          className="text-gray-800 text-base font-bold flex-1"
         >
           {label}
         </Text>
       </View>
 
-      {/* Down arrow between steps */}
+      {/* Connection arrow - optional, but helps visual flow */}
       {!isLast && (
-        <View style={{ alignItems: 'center', marginVertical: 2 }}>
-          <Ionicons name="chevron-down" size={18} color={SIM_COLORS.checkGreen} />
+        <View className="items-center mb-1">
+          <Ionicons name="chevron-down" size={16} color="rgba(255,255,255,0.4)" />
         </View>
       )}
     </Animated.View>

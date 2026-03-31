@@ -1,35 +1,12 @@
-export const Colors = {
-  // Background gradient tones
-  bgDark: '#0a2e2a',
-  bgMid: '#0d3b35',
-  bgLight: '#0f4a42',
-  bgCard: '#0e3d36',
-  bgCardLight: '#145a4f',
-
-  // Teal / green accent
-  primary: '#2dd4bf',       // teal-400
-  primaryDark: '#0f766e',   // teal-700
-  primaryDeep: '#134e4a',   // teal-900
-
-  // Text
-  textWhite: '#ffffff',
-  textMuted: '#a0c4bf',
-  textSubtle: '#6dada5',
-
-  // Risk
-  riskHigh: '#ef4444',      // red-500
-  riskBar: '#1a5c53',
-
-  // Amounts
-  amountGreen: '#4ade80',   // green-400
-
-  // Tab active
-  tabActive: '#2dd4bf',
-  tabInactive: '#4d8a82',
-
-  // Nav bar
-  navBg: '#071e1b',
-  navBorder: '#133d37',
+export const COLORS = {
+  primary: "#10B981",   // green (main)
+  primaryDark: "#059669",
+  background: "#F0FDF4",
+  white: "#FFFFFF",
+  textPrimary: "#111827",
+  textSecondary: "#6B7280",
+  success: "#22C55E",
+  danger: "#EF4444",
 };
 
 export const MOCK_USER = {

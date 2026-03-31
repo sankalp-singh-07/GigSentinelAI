@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Colors } from '../constants/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../constants/theme';
 
 interface EarningsCardProps {
   expected: string;
@@ -9,39 +10,26 @@ interface EarningsCardProps {
 
 export default function EarningsCard({ expected, today }: EarningsCardProps) {
   return (
-    <View
-      style={{
-        marginHorizontal: 16,
-        marginTop: 12,
-        backgroundColor: Colors.bgCard,
-        borderRadius: 16,
-        flexDirection: 'row',
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: Colors.primaryDark,
-      }}
-    >
-      {/* Expected Earnings */}
-      <View style={{ flex: 1, padding: 16 }}>
-        <Text style={{ color: Colors.textMuted, fontSize: 11, fontWeight: '600', letterSpacing: 0.5 }}>
-          Expected Earnings
-        </Text>
-        <Text style={{ color: Colors.textWhite, fontSize: 26, fontWeight: '800', marginTop: 4 }}>
-          {expected}
-        </Text>
+    <View className="mx-4 mt-2 bg-white rounded-2xl p-5 shadow-md border border-emerald-50">
+      <View className="flex-row justify-between items-start mb-6">
+        <View>
+          <Text className="text-gray-500 text-xs font-semibold tracking-wider">EXPECTED EARNINGS</Text>
+          <Text className="text-gray-900 text-3xl font-extrabold mt-1">{expected}</Text>
+        </View>
+        <View className="bg-emerald-100 px-3 py-1 rounded-full flex-row items-center">
+          <Ionicons name="trending-up" size={14} color={COLORS.primary} />
+          <Text className="text-emerald-700 text-xs font-bold ml-1">+12%</Text>
+        </View>
       </View>
-
-      {/* Divider */}
-      <View style={{ width: 1, backgroundColor: Colors.primaryDark, marginVertical: 12 }} />
-
-      {/* Today's Earnings */}
-      <View style={{ flex: 1, padding: 16 }}>
-        <Text style={{ color: Colors.textMuted, fontSize: 11, fontWeight: '600', letterSpacing: 0.5 }}>
-          Today&apos;s Earnings
-        </Text>
-        <Text style={{ color: Colors.primary, fontSize: 26, fontWeight: '800', marginTop: 4 }}>
-          {today}
-        </Text>
+      
+      <View className="flex-row items-center border-t border-gray-100 pt-4">
+        <View className="w-10 h-10 bg-emerald-50 rounded-full items-center justify-center">
+          <Ionicons name="wallet-outline" size={20} color={COLORS.primary} />
+        </View>
+        <View className="ml-3">
+          <Text className="text-gray-400 text-xs font-medium">Earned Today</Text>
+          <Text className="text-emerald-600 text-lg font-bold">{today}</Text>
+        </View>
       </View>
     </View>
   );

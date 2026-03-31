@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated } from 'react-native';
 
+import { COLORS } from '../constants/theme';
+
 interface ProgressBarProps {
   percentage: number;
 }
@@ -22,12 +24,12 @@ export default function ProgressBar({ percentage }: ProgressBarProps) {
   });
 
   return (
-    <View style={{ height: 12, backgroundColor: '#e5e7eb', borderRadius: 6, overflow: 'hidden', marginVertical: 8 }}>
+    <View style={{ height: 12, backgroundColor: '#f0fdf4', borderRadius: 6, overflow: 'hidden', marginVertical: 8 }}>
       <Animated.View
         style={{
           height: '100%',
           width: widthInterpolation,
-          backgroundColor: '#1f2937', // black/80 essentially
+          backgroundColor: COLORS.primary, // green (main)
           borderRadius: 6,
         }}
       />

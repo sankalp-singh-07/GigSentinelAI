@@ -18,21 +18,21 @@ import TabSwitcher from '../../components/TabSwitcher';
 import ActivityItem from '../../components/ActivityItem';
 
 import {
-  Colors,
+  COLORS,
   MOCK_USER,
   MOCK_EARNINGS,
   MOCK_RISK,
   MOCK_PROTECTION,
   MOCK_ACTIVITIES,
-} from '../../constants/theme';
+} from "../../constants/theme";
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState('This Month');
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bgDark }}>
+    <SafeAreaView className="flex-1 bg-emerald-500">
       <ScrollView
-        style={{ flex: 1 }}
+        className="flex-1"
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
@@ -59,20 +59,8 @@ export default function HomeScreen() {
           potentialLoss={MOCK_PROTECTION.potentialLoss}
         />
 
-        {/* ── Tab Switcher ── */}
-        <TabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
-
-        {/* ── Activity List ── */}
         <View
-          style={{
-            marginHorizontal: 16,
-            marginTop: 14,
-            backgroundColor: Colors.bgCard,
-            borderRadius: 16,
-            borderWidth: 1,
-            borderColor: Colors.primaryDark,
-            overflow: 'hidden',
-          }}
+          className="mx-4 mt-4 bg-white rounded-2xl shadow-md overflow-hidden"
         >
           {MOCK_ACTIVITIES.map((item, index) => (
             <ActivityItem
@@ -88,34 +76,12 @@ export default function HomeScreen() {
 
         {/* ── CTA Button ── */}
         <TouchableOpacity
-          onPress={() => router.push('/simulate' as any)}
+          onPress={() => router.push("/simulate" as any)}
           activeOpacity={0.85}
-          style={{
-            marginHorizontal: 16,
-            marginTop: 20,
-            backgroundColor: Colors.primary,
-            borderRadius: 50,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 16,
-            gap: 10,
-            shadowColor: Colors.primary,
-            shadowOffset: { width: 0, height: 6 },
-            shadowOpacity: 0.45,
-            shadowRadius: 12,
-            elevation: 8,
-          }}
+          className="mx-4 mt-6 bg-white rounded-full flex-row items-center justify-center py-4 shadow-lg mb-6"
         >
-          <Ionicons name="cloud" size={20} color={Colors.bgDark} />
-          <Text
-            style={{
-              color: Colors.bgDark,
-              fontSize: 16,
-              fontWeight: '800',
-              letterSpacing: 0.3,
-            }}
-          >
+          <Ionicons name="cloud" size={20} color={COLORS.primary} />
+          <Text className="ml-2 text-emerald-600 text-lg font-extrabold">
             Simulate Rain Event
           </Text>
         </TouchableOpacity>

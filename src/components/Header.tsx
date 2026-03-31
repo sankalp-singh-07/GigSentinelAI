@@ -1,36 +1,30 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Colors } from '../constants/theme';
+import { COLORS } from '../constants/theme';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderProps {
   name: string;
 }
 
 export default function Header({ name }: HeaderProps) {
+  const { user } = useAuth();
+  const displayName = user?.name || name;
+
   return (
-    <View className="flex-row items-center justify-between px-5 pt-4 pb-2">
+    <View className="px-4 pt-4 pb-2 flex-row justify-between items-center">
       <View>
-        <Text style={{ color: Colors.textWhite, fontSize: 22, fontWeight: '700' }}>
-          Hi, {name} 👋
-        </Text>
-        <Text style={{ color: Colors.textMuted, fontSize: 13, marginTop: 2 }}>
-          You&apos;re protected today
-        </Text>
+        <Text className="text-emerald-100 text-sm font-medium">Welcome back,</Text>
+        <Text className="text-white text-3xl font-extrabold">{displayName}</Text>
       </View>
-      <TouchableOpacity
-        style={{
-          width: 42,
-          height: 42,
-          borderRadius: 21,
-          backgroundColor: Colors.bgCardLight,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+      <TouchableOpacity 
+        className="w-12 h-12 bg-white/20 rounded-full items-center justify-center border border-white/30"
         onPress={() => router.push('/notifications' as any)}
         activeOpacity={0.7}
       >
-        <Ionicons name="notifications-outline" size={20} color={Colors.textWhite} />
+        <Ionicons name="notifications-outline" size={24} color="white" />
+        <View className="absolute top-2.5 right-3 w-3 h-3 bg-red-500 rounded-full border-2 border-emerald-500" />
       </TouchableOpacity>
     </View>
   );

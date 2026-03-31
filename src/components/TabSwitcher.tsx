@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Colors, TABS } from '../constants/theme';
+import { COLORS } from '../constants/theme';
 
 interface TabSwitcherProps {
   activeTab: string;
@@ -8,41 +8,20 @@ interface TabSwitcherProps {
 }
 
 export default function TabSwitcher({ activeTab, onTabChange }: TabSwitcherProps) {
+  const tabs = ['Today', 'This Week', 'This Month'];
+
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        marginHorizontal: 16,
-        marginTop: 18,
-        backgroundColor: Colors.bgCard,
-        borderRadius: 14,
-        padding: 4,
-        borderWidth: 1,
-        borderColor: Colors.primaryDark,
-      }}
-    >
-      {TABS.map((tab) => {
+    <View className="flex-row mx-4 mt-6 bg-emerald-100/50 p-1.5 rounded-2xl">
+      {tabs.map((tab) => {
         const isActive = activeTab === tab;
         return (
           <TouchableOpacity
             key={tab}
             onPress={() => onTabChange(tab)}
-            activeOpacity={0.8}
-            style={{
-              flex: 1,
-              paddingVertical: 9,
-              alignItems: 'center',
-              borderRadius: 11,
-              backgroundColor: isActive ? Colors.primary : 'transparent',
-            }}
+            activeOpacity={0.7}
+            className={`flex-1 py-3 items-center rounded-xl ${isActive ? 'bg-white shadow-sm' : ''}`}
           >
-            <Text
-              style={{
-                color: isActive ? Colors.bgDark : Colors.textMuted,
-                fontSize: 12,
-                fontWeight: isActive ? '700' : '500',
-              }}
-            >
+            <Text className={`font-bold text-sm ${isActive ? 'text-emerald-700' : 'text-emerald-600/70'}`}>
               {tab}
             </Text>
           </TouchableOpacity>

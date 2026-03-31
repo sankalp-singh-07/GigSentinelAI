@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../constants/theme';
+import { COLORS } from '../constants/theme';
 
 interface ActivityItemProps {
   icon: string;
@@ -11,47 +11,28 @@ interface ActivityItemProps {
   isLast?: boolean;
 }
 
-export default function ActivityItem({ icon, title, subtitle, amount, isLast }: ActivityItemProps) {
+export default function ActivityItem({
+  icon,
+  title,
+  subtitle,
+  amount,
+  isLast,
+}: ActivityItemProps) {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        borderBottomWidth: isLast ? 0 : 1,
-        borderBottomColor: Colors.primaryDark,
-      }}
+    <TouchableOpacity 
+      activeOpacity={0.6}
+      className={`flex-row items-center justify-between p-4 ${!isLast ? 'border-b border-gray-50' : ''}`}
     >
-      {/* Icon circle */}
-      <View
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: 22,
-          backgroundColor: Colors.bgCardLight,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginRight: 12,
-          borderWidth: 1,
-          borderColor: Colors.primaryDark,
-        }}
-      >
-        <Ionicons
-          name={icon as any}
-          size={22}
-          color={Colors.primary}
-        />
+      <View className="flex-row items-center">
+        <View className="w-10 h-10 bg-emerald-50 rounded-xl items-center justify-center">
+          <Ionicons name={icon as any} size={20} color={COLORS.primary} />
+        </View>
+        <View className="ml-3">
+          <Text className="text-gray-800 font-bold">{title}</Text>
+          <Text className="text-gray-400 text-xs mt-0.5">{subtitle}</Text>
+        </View>
       </View>
-
-      {/* Title + subtitle */}
-      <View style={{ flex: 1 }}>
-        <Text style={{ color: Colors.textWhite, fontSize: 14, fontWeight: '600' }}>{title}</Text>
-        <Text style={{ color: Colors.primary, fontSize: 12, marginTop: 2 }}>{subtitle}</Text>
-      </View>
-
-      {/* Amount */}
-      <Text style={{ color: Colors.amountGreen, fontSize: 15, fontWeight: '700' }}>{amount}</Text>
-    </View>
+      <Text className="text-emerald-600 font-extrabold text-lg">{amount}</Text>
+    </TouchableOpacity>
   );
 }

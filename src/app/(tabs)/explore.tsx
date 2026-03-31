@@ -1,199 +1,103 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import React from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { BarChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-chart-kit';
+import { COLORS } from '../../constants/theme';
 
-const screenWidth = Dimensions.get('window').width;
+const { width } = Dimensions.get('window');
 
-const CHART_DATA = {
-  labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-  datasets: [
-    {
-      data: [8, 3, 7, 5, 9, 2, 7.5],
-    },
-  ],
-};
-
-const FILTER_TABS = ['Daily', 'Weekly', 'Monthly', 'Year'];
-
-export default function InsightsScreen() {
-  const [activeTab, setActiveTab] = useState('Daily');
-
+export default function ExploreScreen() {
   return (
-    <SafeAreaView edges={['top', 'left', 'right']} className="flex-1 bg-[#11B88A]">
-      
-      {/* ── HEADER ── */}
-      <View className="px-4 pt-4 pb-6 flex-row justify-between items-center">
-        <TouchableOpacity activeOpacity={0.7} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#ffffff" />
-        </TouchableOpacity>
-
-        <Text className="text-white text-lg font-extrabold tracking-wide">
-          Risk & Earnings Insights
-        </Text>
-
-        <TouchableOpacity 
-          activeOpacity={0.7} 
-          onPress={() => router.push('/notifications' as any)}
-          className="bg-white rounded-full p-1.5"
-        >
-          <Ionicons name="notifications-outline" size={20} color="#11B88A" />
+    <SafeAreaView className="flex-1 bg-emerald-500">
+      <View className="px-6 py-4 flex-row justify-between items-center">
+        <Text className="text-white text-2xl font-bold">Insights</Text>
+        <TouchableOpacity className="w-10 h-10 bg-white/20 rounded-full items-center justify-center">
+          <Ionicons name="share-social-outline" size={20} color="white" />
         </TouchableOpacity>
       </View>
 
-      {/* ── TOP CONTENT: EARNINGS & RISK ── */}
-      <View className="px-4 mb-6">
-        {/* Earnings Row */}
-        <View className="flex-row justify-between items-center mb-6">
-          <View>
-            <Text className="text-gray-900 font-bold text-xs mb-1">Expected Earnings</Text>
-            <Text className="text-white text-3xl font-extrabold tracking-tight">₹900.00</Text>
-          </View>
-          <View className="w-px h-12 bg-white/40 shadow-sm" />
-          <View>
-            <Text className="text-gray-900 font-bold text-xs mb-1">Actual Earnings</Text>
-            <Text className="text-blue-500 text-3xl font-extrabold tracking-tight">₹500.40</Text>
-          </View>
-        </View>
-
-        {/* Risk Trend Badge */}
-        <View className="flex-row items-center gap-2 mt-3 mb-2">
-          <View className="bg-black/20 px-3 py-1 rounded-full">
-            <Text className="text-white text-xs">
-              Weekly Risk Trend
-            </Text>
-          </View>
-
-          <View className="flex-row items-center bg-white px-3 py-1 rounded-full gap-1">
-            <Ionicons name="trending-up" size={14} color="#16a34a" />
-            <Text className="text-green-600 text-xs font-semibold">
-              Increasing
-            </Text>
-          </View>
-        </View>
-
-        {/* Subtext */}
-        <View className="flex-row items-center">
-          <View className="w-1.5 h-1.5 bg-gray-900 mr-2 ml-1" />
-          <Text className="text-gray-900 font-medium text-sm">
-            Higher Disruption Probability This Week
-          </Text>
-        </View>
-      </View>
-
-      {/* ── MAIN WHITE CONTAINER ── */}
-      <View className="flex-1 bg-white rounded-t-[40px] px-5 pt-6 shadow-xl">
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 100 }}>
+        {/* Chart Card */}
+        <View className="mx-4 mt-2 bg-white rounded-3xl p-5 shadow-xl">
+          <Text className="text-gray-800 text-lg font-bold mb-1">Earnings Trend</Text>
+          <Text className="text-gray-400 text-sm mb-6">Daily earnings vs. risk protection</Text>
           
-          {/* TABS */}
-          <View className="flex-row justify-between bg-white rounded-full p-1 mb-6 border border-gray-100 shadow-sm" style={{ elevation: 2 }}>
-            {FILTER_TABS.map(tab => (
-              <TouchableOpacity
-                key={tab}
-                activeOpacity={0.7}
-                onPress={() => setActiveTab(tab)}
-                className={`py-2 px-4 rounded-full ${activeTab === tab ? 'bg-[#11B88A]' : 'bg-transparent'}`}
-              >
-                <Text className={`font-semibold text-sm ${activeTab === tab ? 'text-white' : 'text-gray-500'}`}>
-                  {tab}
-                </Text>
-              </TouchableOpacity>
-            ))}
+          <LineChart
+            data={{
+              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              datasets: [{
+                data: [450, 600, 300, 800, 500, 900],
+                color: (opacity = 1) => `rgba(16, 185, 129, ${opacity})`,
+                strokeWidth: 3
+              }]
+            }}
+            width={width - 72}
+            height={200}
+            chartConfig={{
+              backgroundColor: '#ffffff',
+              backgroundGradientFrom: '#ffffff',
+              backgroundGradientTo: '#ffffff',
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(16, 185, 129, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(107, 114, 128, ${opacity})`,
+              style: { borderRadius: 16 },
+              propsForDots: { r: "4", strokeWidth: "2", stroke: "#10B981" }
+            }}
+            bezier
+            style={{ marginVertical: 8, borderRadius: 16 }}
+          />
+        </View>
+
+        {/* Stats Grid */}
+        <View className="flex-row px-4 mt-6 gap-4">
+          <View className="flex-1 bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+            <Text className="text-emerald-600 font-bold text-xs mb-1">STABILITY</Text>
+            <Text className="text-gray-900 text-xl font-extrabold">84%</Text>
+          </View>
+          <View className="flex-1 bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+            <Text className="text-emerald-600 font-bold text-xs mb-1">PROTECTED</Text>
+            <Text className="text-gray-900 text-xl font-extrabold">₹3.4k</Text>
+          </View>
+        </View>
+
+        {/* Summary Sections */}
+        <View className="mx-4 mt-6 bg-white rounded-2xl p-5 shadow-md">
+          <Text className="text-gray-800 font-bold mb-4">Top Risk Factors</Text>
+          
+          <View className="flex-row items-center mb-4">
+            <View className="w-8 h-8 bg-red-50 rounded-full items-center justify-center">
+              <Ionicons name="rainy-outline" size={16} color="#EF4444" />
+            </View>
+            <View className="ml-3 flex-1">
+              <Text className="text-gray-800 text-sm font-semibold">Unexpected Rain</Text>
+              <View className="h-1.5 w-full bg-gray-100 rounded-full mt-1">
+                <View className="h-full bg-red-400 rounded-full w-[65%]" />
+              </View>
+            </View>
+            <Text className="ml-3 text-gray-500 text-xs font-bold">65%</Text>
           </View>
 
-          {/* CHART */}
-          <View className="bg-green-50 rounded-3xl p-4 mb-6 relative">
-            <View className="flex-row justify-between items-center mb-4 z-10">
-              <Text className="text-gray-800 font-bold ml-1">Earnings Vs Risk Impact</Text>
-              <View className="flex-row gap-2">
-                <View className="bg-[#11B88A] w-8 h-8 rounded-full items-center justify-center shadow-sm">
-                  <Ionicons name="search" size={16} color="white" />
-                </View>
-                <View className="bg-[#11B88A] w-8 h-8 rounded-full items-center justify-center shadow-sm">
-                  <Ionicons name="calendar" size={16} color="white" />
-                </View>
+          <View className="flex-row items-center">
+            <View className="w-8 h-8 bg-orange-50 rounded-full items-center justify-center">
+              <Ionicons name="bicycle-outline" size={16} color="#F59E0B" />
+            </View>
+            <View className="ml-3 flex-1">
+              <Text className="text-gray-800 text-sm font-semibold">Traffic Congestion</Text>
+              <View className="h-1.5 w-full bg-gray-100 rounded-full mt-1">
+                <View className="h-full bg-orange-400 rounded-full w-[40%]" />
               </View>
             </View>
-
-            <BarChart
-              data={CHART_DATA}
-              width={screenWidth - 72}
-              height={180}
-              yAxisLabel=""
-              yAxisSuffix="k"
-              fromZero={true}
-              chartConfig={{
-                backgroundColor: 'transparent',
-                backgroundGradientFrom: '#f0fdf4',
-                backgroundGradientTo: '#f0fdf4',
-                fillShadowGradientFrom: '#3b82f6',
-                fillShadowGradientFromOpacity: 1,
-                fillShadowGradientTo: '#22c55e',
-                fillShadowGradientToOpacity: 1,
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(34, 197, 94, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(107, 114, 128, ${opacity})`,
-                barPercentage: 0.5,
-                propsForLabels: { fontSize: 10, fontWeight: '600' },
-                propsForBackgroundLines: {
-                  strokeDasharray: "4",
-                  stroke: "rgba(156, 163, 175, 0.3)",
-                }
-              }}
-              style={{ paddingRight: 0, paddingLeft: -10, alignSelf: 'center' }}
-              withInnerLines={true}
-              showBarTops={false}
-              showValuesOnTopOfBars={false}
-            />
+            <Text className="ml-3 text-gray-500 text-xs font-bold">40%</Text>
           </View>
-
-          {/* STATS SUMMARY */}
-          <View className="flex-row justify-between mb-6">
-            {/* Total Protected Card */}
-            <View className="bg-white rounded-3xl w-[48%] items-center py-5 border border-gray-100 shadow-sm" style={{ elevation: 2 }}>
-              <View className="w-10 h-10 rounded-xl bg-green-50 items-center justify-center mb-2 border border-green-100">
-                <Ionicons name="trending-up" size={20} color="#11B88A" />
-              </View>
-              <Text className="text-gray-900 font-semibold text-xs mb-1">Total Protected</Text>
-              <Text className="text-gray-900 font-extrabold text-xl">₹1,420</Text>
-            </View>
-            
-            {/* Total Loss Prevented Card */}
-            <View className="bg-white rounded-3xl w-[48%] items-center py-5 border border-gray-100 shadow-sm" style={{ elevation: 2 }}>
-              <View className="w-10 h-10 rounded-xl bg-blue-50 items-center justify-center mb-2 border border-blue-100">
-                <Ionicons name="trending-down" size={20} color="#3b82f6" />
-              </View>
-              <Text className="text-gray-900 font-semibold text-xs mb-1">Total Loss Prevented</Text>
-              <Text className="text-blue-500 font-extrabold text-xl">₹620</Text>
-            </View>
-          </View>
-
-          {/* SMART INSIGHTS */}
-          <Text className="text-gray-800 font-bold mb-4 ml-1">Smart Insights</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="overflow-visible pb-4">
-            <View className="bg-blue-50 rounded-3xl p-5 w-60 mr-4 border border-blue-100 shadow-sm">
-              <View className="bg-blue-100 w-8 h-8 rounded-full items-center justify-center mb-3">
-                <Ionicons name="rainy-outline" size={18} color="#2563eb" />
-              </View>
-              <Text className="text-blue-700 font-semibold text-sm leading-5">
-                Rain caused highest losses this week (+₹850 covered).
-              </Text>
-            </View>
-            <View className="bg-[#ecfdf5] rounded-3xl p-5 w-60 mr-4 border border-[#d1fae5] shadow-sm">
-              <View className="bg-[#d1fae5] w-8 h-8 rounded-full items-center justify-center mb-3">
-                <Ionicons name="cash-outline" size={18} color="#059669" />
-              </View>
-              <Text className="text-green-700 font-semibold text-sm leading-5">
-                Friday had maximum claims processed seamlessly.
-              </Text>
-            </View>
-          </ScrollView>
-
-        </ScrollView>
-      </View>
-      
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

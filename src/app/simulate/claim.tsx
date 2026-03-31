@@ -3,8 +3,10 @@ import { View, Text, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
-import { MOCK_CLAIM, SIMULATION_TIMING, SIM_COLORS } from '../../constants/simulation';
+import { MOCK_CLAIM, SIMULATION_TIMING } from '../../constants/simulation';
+import { COLORS } from '../../constants/theme';
 
 interface ClaimRowProps {
   label: string;
@@ -14,17 +16,9 @@ interface ClaimRowProps {
 
 function ClaimRow({ label, value, valueColor }: ClaimRowProps) {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 14,
-      }}
-    >
-      <Text style={{ color: '#166534', fontSize: 14, fontWeight: '500' }}>{label}</Text>
-      <Text style={{ color: valueColor, fontSize: 16, fontWeight: '800' }}>{value}</Text>
+    <View className="flex-row justify-between items-center py-3 px-4 border-b border-emerald-50">
+      <Text className="text-gray-500 text-sm font-medium">{label}</Text>
+      <Text className="text-emerald-700 text-lg font-extrabold" style={{ color: valueColor === '#dc2626' ? '#EF4444' : '#047857' }}>{value}</Text>
     </View>
   );
 }
@@ -32,119 +26,45 @@ function ClaimRow({ label, value, valueColor }: ClaimRowProps) {
 export default function ClaimSummaryScreen() {
   const scale = useRef(new Animated.Value(0.88)).current;
   const opacity = useRef(new Animated.Value(0)).current;
-  const iconBounce = useRef(new Animated.Value(0.6)).current;
 
   useEffect(() => {
-    // Card scale + fade in
     Animated.parallel([
-      Animated.spring(scale, {
-        toValue: 1,
-        friction: 7,
-        tension: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 450,
-        useNativeDriver: true,
-      }),
-      Animated.spring(iconBounce, {
-        toValue: 1,
-        friction: 5,
-        tension: 120,
-        useNativeDriver: true,
-      }),
+      Animated.spring(scale, { toValue: 1, friction: 7, tension: 100, useNativeDriver: true }),
+      Animated.timing(opacity, { toValue: 1, duration: 450, useNativeDriver: true }),
     ]).start();
 
-    // Auto-navigate to success after delay
-    const timer = setTimeout(() => {
-      router.push('/simulate/success');
-    }, SIMULATION_TIMING.successDelay);
-
+    const timer = setTimeout(() => router.replace('/simulate/success' as any), SIMULATION_TIMING.successDelay);
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: SIM_COLORS.gradientTop, justifyContent: 'center' }}
-    >
-      <Animated.View
-        style={{
-          opacity,
-          transform: [{ scale }],
-          marginHorizontal: 24,
-          backgroundColor: SIM_COLORS.claimBg,
-          borderRadius: 24,
-          overflow: 'hidden',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.25,
-          shadowRadius: 16,
-          elevation: 10,
-        }}
-      >
-        {/* Card header */}
-        <View
-          style={{
-            backgroundColor: SIM_COLORS.cardBorder,
-            paddingVertical: 20,
-            paddingHorizontal: 20,
-            alignItems: 'center',
-          }}
+    <LinearGradient colors={["#10B981", "#059669"]} className="flex-1">
+      <SafeAreaView className="flex-1 justify-center">
+        <Animated.View 
+          className="mx-6 bg-white rounded-3xl overflow-hidden shadow-2xl"
+          style={{ opacity, transform: [{ scale }] }}
         >
-          <Animated.View style={{ transform: [{ scale: iconBounce }] }}>
-            <Ionicons name="document-text" size={40} color="#ffffff" />
-          </Animated.View>
-          <Text
-            style={{
-              color: '#ffffff',
-              fontSize: 20,
-              fontWeight: '800',
-              marginTop: 10,
-              letterSpacing: 0.3,
-            }}
-          >
-            Auto Claim Generated
-          </Text>
-          <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, marginTop: 4 }}>
-            Claim processed successfully ✓
-          </Text>
-        </View>
+          <View className="bg-emerald-600 p-6 items-center">
+            <View className="bg-white/20 p-4 rounded-full mb-4">
+               <Ionicons name="document-text" size={32} color="white" />
+            </View>
+            <Text className="text-white text-xl font-extrabold">Claim Report</Text>
+            <Text className="text-emerald-100 text-sm mt-1">Processed Successfully ✓</Text>
+          </View>
 
-        {/* Data box */}
-        <View style={{ backgroundColor: SIM_COLORS.claimBox, margin: 16, borderRadius: 14 }}>
-          <ClaimRow
-            label="Expected Earnings"
-            value={MOCK_CLAIM.expectedEarnings}
-            valueColor="#14532d"
-          />
-          <View style={{ height: 1, backgroundColor: '#bbf7d0', marginHorizontal: 14 }} />
-          <ClaimRow
-            label="Actual Earnings"
-            value={MOCK_CLAIM.actualEarnings}
-            valueColor="#0f766e"
-          />
-          <View style={{ height: 1, backgroundColor: '#bbf7d0', marginHorizontal: 14 }} />
-          <ClaimRow
-            label="Loss Covered"
-            value={MOCK_CLAIM.loss}
-            valueColor="#dc2626"
-          />
-        </View>
+          <View className="p-4">
+            <View className="bg-emerald-50 rounded-2xl overflow-hidden border border-emerald-100">
+              <ClaimRow label="Expected Earnings" value={MOCK_CLAIM.expectedEarnings} valueColor="text-gray-900" />
+              <ClaimRow label="Actual Earnings" value={MOCK_CLAIM.actualEarnings} valueColor="text-gray-900" />
+              <ClaimRow label="Loss Covered" value={MOCK_CLAIM.loss} valueColor="#dc2626" />
+            </View>
+          </View>
 
-        {/* Footer note */}
-        <Text
-          style={{
-            color: '#6b7280',
-            fontSize: 12,
-            textAlign: 'center',
-            paddingBottom: 18,
-            paddingHorizontal: 20,
-          }}
-        >
-          Processing payout... please wait 🔄
-        </Text>
-      </Animated.View>
-    </SafeAreaView>
+          <Text className="text-gray-400 text-xs text-center pb-6 px-6 font-medium">
+            Processing payout to your wallet...
+          </Text>
+        </Animated.View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }

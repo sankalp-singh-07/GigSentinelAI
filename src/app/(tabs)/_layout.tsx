@@ -42,7 +42,7 @@ export default function TabsLayout() {
                 <Ionicons
                   name={tab.icon}
                   size={24}
-                  color={focused ? '#22c55e' : '#6b7280'}
+                  color={focused ? '#10B981' : '#6b7280'}
                 />
               </View>
             ),
